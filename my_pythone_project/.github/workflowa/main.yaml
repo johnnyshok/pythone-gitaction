@@ -1,0 +1,46 @@
+name: Run Tests and Notify in Slack
+
+on:
+  push:
+    branches:
+      - main
+      - master
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Check Out Code
+      uses: actions/checkout@v2
+
+    - name: Set up Python
+      uses: actions/setup-python@v2
+      with:
+        python-version: 3.x
+
+    - name: Install Dependencies
+      run: |
+        pip install -r requirements.txt
+        pip install pytest
+
+    - name: Run Tests
+      run: python -m unittest discover tests
+
+    - name: Send Slack Notification on Success
+      if: success()
+      env:
+        SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+      run: |
+        curl -X POST -H 'Content-type: application/json' --data '{
+          "text": "Tests have been executed successfully."
+        }' $SLACK_WEBHOOK_URL
+
+    - name: Send Slack Notification on Failure
+      if: failure()
+      env:
+        SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+      run: |
+        curl -X POST -H 'Content-type: application/json' --data '{
+          "text": "Tests have failed."
+        }' $SLACK_WEBHOOK_URL
