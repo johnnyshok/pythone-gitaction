@@ -20,21 +20,14 @@ jobs:
 
     - name: Run Tests
       run: python -m unittest discover tests
+      
+    - uses: actions/checkout@master
+    - name: Slack Notification Demo
+      uses: bryannice/gitactions-slack-notification@2.0.0
+        env:
+          SLACK_INCOMING_WEBHOOK: ${{ secrets.SLACK_WEBHOOK_URL }}
+          SLACK_MESSAGE: 'Demo''ing the Slack Notification'
+          SLACK_TITLE: 'Slack Notification Demo'
 
-    - name: Send Slack Notification on Success
-      if: success()
-      env:
-        SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
-      run: |
-        curl -X POST -H 'Content-type: application/json' --data '{
-          "text": "Tests have been executed successfully."
-        }' $SLACK_WEBHOOK_URL
 
-    - name: Send Slack Notification on Failure
-      if: failure()
-      env:
-        SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
-      run: |
-        curl -X POST -H 'Content-type: application/json' --data '{
-          "text": "Tests have failed."
-        }' $SLACK_WEBHOOK_URL
+
