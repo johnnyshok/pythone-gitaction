@@ -2,7 +2,8 @@ name: Run Tests and Notify in Slack
 
 on:
   push:
-    branches:[main
+    branches:m
+      - main
       - master
 
 jobs:
