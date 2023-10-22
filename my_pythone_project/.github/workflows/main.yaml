@@ -1,14 +1,22 @@
-on: push
 name: Slack Notification Demo
+
+on:
+  push:
+    branches:
+      - main
+      - master
+
 jobs:
-    slackNotification:
-      name: Slack Notification Demo
-      runs-on: ubuntu-latest
-      steps:
-      - uses: actions/checkout@master
-      - name: Slack Notification Demo
+  slackNotification:
+    name: Slack Notification Demo
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v2
+
+      - name: Slack Notification
         uses: bryannice/gitactions-slack-notification@2.0.0
         env:
-          SLACK_INCOMING_WEBHOOK: ${{ secrets.SLACK_WEBHOOK_URL }}
-          SLACK_MESSAGE: 'Demo''ing the Slack Notification'
+          SLACK_INCOMING_WEBHOOK: ${{ secrets.SLACK_INCOMING_WEBHOOK }}
+          SLACK_MESSAGE: 'Code update in the main or master branch'
           SLACK_TITLE: 'Slack Notification Demo'
