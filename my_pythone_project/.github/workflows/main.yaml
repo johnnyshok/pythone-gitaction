@@ -26,7 +26,7 @@ jobs:
     - name: Slack Notification Demo
       uses: bryannice/gitactions-slack-notification@2.0.0
         env:
-          SLACK_INCOMING_WEBHOOK: ${{ secrets.SLACK_WEBHOOK_URL }}
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
           SLACK_MESSAGE: 'Demo''ing the Slack Notification'
           SLACK_TITLE: 'Slack Notification Demo'
 
