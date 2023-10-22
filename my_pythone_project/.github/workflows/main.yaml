@@ -2,7 +2,7 @@ name: Run Tests and Notify in Slack
 
 on:
   push:
-    branches:m
+    branches:
       - main
       - master
 
