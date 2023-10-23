@@ -20,7 +20,7 @@ jobs:
         pip install pytest
 
     - name: Run Tests
-      run: python -m unittest discover tests
+      run: python3 -m unittest discover tests
 
     - name: Send Telegram message on push
       uses: appleboy/telegram-action@0.0.3
