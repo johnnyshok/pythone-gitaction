@@ -29,3 +29,6 @@ jobs:
         to: ${{ secrets.TELEGRAM_TO }}
         token: ${{ secrets.TELEGRAM_TOKEN }}
         message: Tests complited!
+      env:
+        TELEGRAM_TO: ${{ secrets.TELEGRAM_TO }}
+        TELEGRAM_TOKEN: ${{ secrets.TELEGRAM_TOKEN }}
