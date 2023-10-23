@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - main
+      - master
 
 jobs:
   build:
@@ -20,15 +21,11 @@ jobs:
         pip install pytest
 
     - name: Run Tests
-      run: python3 -m unittest discover 
+      run: python -m unittest discover 
 
     - name: Send Telegram message on push
       uses: appleboy/telegram-action@0.0.3
       with:
         to: ${{ secrets.TELEGRAM_TO }}
         token: ${{ secrets.TELEGRAM_TOKEN }}
-        message: test message
-      env:
-        TELEGRAM_TO: ${{ secrets.TELEGRAM_TO }}
-        TELEGRAM_TOKEN: ${{ secrets.TELEGRAM_TOKEN }}
-
+        message: Tests complited!
