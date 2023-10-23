@@ -2,7 +2,7 @@ name:  Telegram Notificatioa Demo
 
 on:
   push:
-    branches: [ main ]
+    branches: [main]
 - name: send telegram message on push        
   uses: appleboy/telegram-action@0.0.3
   with:
