@@ -1,34 +1,49 @@
-name: Telegram Notification Demo
+- name: Run Tests
+  id: tests
+  run: |
+    test_result=$(python -m unittest discover 2>&1)
+    if [[ "$test_result" == *"Ran 0 tests in"* ]]; then
+      echo "Tests Failed"
+    else
+      echo "Tests Passed"
+    fi
+  continue-on-error: true
 
-on:
-  push:
-    branches:
-      - main
-      - master
+- name: Send Telegram message on push
+  if: steps.tests.outcome != 'success'
+  uses: appleboy/telegram-action@0.0.3
+  with:
+    to: ${{ secrets.TELEGRAM_TO }}
+    token: ${{ secrets.TELEGRAM_TOKEN }}
+    message: |
+      **GitHub Action Notification**
 
-jobs:
-  build:
-    runs-on: ubuntu-latest
+      Repository: MyRepo pythone-gitaction
+      Branch: ${{ github.ref }}
+      Commit: ${{ github.sha }}
+      Author: ${{ github.actor }}
+      Message: ${{ github.event.head_commit.message }}
+      Status: Tests Failed
+  env:
+    TELEGRAM_TO: ${{ secrets.TELEGRAM_TO }}
+    TELEGRAM_TOKEN: ${{ secrets.TELEGRAM_TOKEN }}
 
-    steps:
-    - name: Set up Python
-      uses: actions/setup-python@v2
-      with:
-        python-version: 3.x
+- name: Send Telegram message on push (Success)
+  if: steps.tests.outcome == 'success'
+  uses: appleboy/telegram-action@0.0.3
+  with:
+    to: ${{ secrets.TELEGRAM_TO }}
+    token: ${{ secrets.TELEGRAM_TOKEN }}
+    message: |
+      **GitHub Action Notification**
 
-    - name: Install Dependencies
-      run: |
-        pip install pytest
+      Repository: MyRepo pythone-gitaction
+      Branch: ${{ github.ref }}
+      Commit: ${{ github.sha }}
+      Author: ${{ github.actor }}
+      Message: ${{ github.event.head_commit.message }}
+      Status: Tests Passed
+  env:
+    TELEGRAM_TO: ${{ secrets.TELEGRAM_TO }}
+    TELEGRAM_TOKEN: ${{ secrets.TELEGRAM_TOKEN }}
 
-    - name: Run Tests
-      run: python3 -m unittest discover
-
-    - name: Send Telegram message on push
-      uses: appleboy/telegram-action@0.0.3
-      with:
-        to: ${{ secrets.TELEGRAM_TO }}
-        token: ${{ secrets.TELEGRAM_TOKEN }}
-        message: Tests complited!
-      env:
-        TELEGRAM_TO: ${{ secrets.TELEGRAM_TO }}
-        TELEGRAM_TOKEN: ${{ secrets.TELEGRAM_TOKEN }}
