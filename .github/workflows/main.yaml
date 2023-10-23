@@ -1,27 +1,35 @@
-name:  Telegram Notificatioa Demo
+name: Telegram Notification Demo
 
 on:
   push:
-    branches: [main]
-- name: Set up Python
-     uses: actions/setup-python@v2
-     with:
-       python-version: 3.x
+    branches:
+      - main
 
-- name: Install Dependencies
-    run: |
-       pip install -r requirements.txt
-       pip install pytest
+jobs:
+  build:
+    runs-on: ubuntu-latest
 
-- name: Run Tests
-    run: python -m unittest discover tests
+    steps:
+    - name: Set up Python
+      uses: actions/setup-python@v2
+      with:
+        python-version: 3.x
 
-- name: send telegram message on push        
-  uses: appleboy/telegram-action@0.0.3
-  with:
-    to: ${{ secrets.TELEGRAM_TO }}
-    token: ${{ secrets.TELEGRAM_TOKEN }}
-    message: test message
-  env:
-    TELEGRAM_TO: ${{ secrets.TELEGRAM_TO }}
-    TELEGRAM_TOKEN: ${{ secrets.TELEGRAM_TOKEN }}
+    - name: Install Dependencies
+      run: |
+        pip install -r requirements.txt
+        pip install pytest
+
+    - name: Run Tests
+      run: python -m unittest discover tests
+
+    - name: Send Telegram message on push
+      uses: appleboy/telegram-action@0.0.3
+      with:
+        to: ${{ secrets.TELEGRAM_TO }}
+        token: ${{ secrets.TELEGRAM_TOKEN }}
+        message: test message
+      env:
+        TELEGRAM_TO: ${{ secrets.TELEGRAM_TO }}
+        TELEGRAM_TOKEN: ${{ secrets.TELEGRAM_TOKEN }}
+
