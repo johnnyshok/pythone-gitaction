@@ -1,49 +1,72 @@
-- name: Run Tests
-  id: tests
-  run: |
-    test_result=$(python -m unittest discover 2>&1)
-    if [[ "$test_result" == *"Ran 0 tests in"* ]]; then
-      echo "Tests Failed"
-    else
-      echo "Tests Passed"
-    fi
-  continue-on-error: true
+name: Telegram Notification Demo
 
-- name: Send Telegram message on push
-  if: steps.tests.outcome != 'success'
-  uses: appleboy/telegram-action@0.0.3
-  with:
-    to: ${{ secrets.TELEGRAM_TO }}
-    token: ${{ secrets.TELEGRAM_TOKEN }}
-    message: |
-      **GitHub Action Notification**
+on:
+  push:
+    branches:
+      - main
+      - master
 
-      Repository: MyRepo pythone-gitaction
-      Branch: ${{ github.ref }}
-      Commit: ${{ github.sha }}
-      Author: ${{ github.actor }}
-      Message: ${{ github.event.head_commit.message }}
-      Status: Tests Failed
-  env:
-    TELEGRAM_TO: ${{ secrets.TELEGRAM_TO }}
-    TELEGRAM_TOKEN: ${{ secrets.TELEGRAM_TOKEN }}
+jobs:
+  build:
+    runs-on: ubuntu-latest
 
-- name: Send Telegram message on push (Success)
-  if: steps.tests.outcome == 'success'
-  uses: appleboy/telegram-action@0.0.3
-  with:
-    to: ${{ secrets.TELEGRAM_TO }}
-    token: ${{ secrets.TELEGRAM_TOKEN }}
-    message: |
-      **GitHub Action Notification**
+    steps:
+    - name: Set up Python
+      uses: actions/setup-python@v2
+      with:
+        python-version: 3.x
 
-      Repository: MyRepo pythone-gitaction
-      Branch: ${{ github.ref }}
-      Commit: ${{ github.sha }}
-      Author: ${{ github.actor }}
-      Message: ${{ github.event.head_commit.message }}
-      Status: Tests Passed
-  env:
-    TELEGRAM_TO: ${{ secrets.TELEGRAM_TO }}
-    TELEGRAM_TOKEN: ${{ secrets.TELEGRAM_TOKEN }}
+    - name: Install Dependencies
+      run: |
+        pip install -r requirements.txt
+        pip install pytest
+
+    - name: Run Tests
+      id: tests
+      run: |
+        test_result=$(python -m unittest discover 2>&1)
+        if [[ "$test_result" == *"Ran 0 tests in"* ]]; then
+          echo "Tests Failed"
+        else
+          echo "Tests Passed"
+        fi
+      continue-on-error: true
+
+    - name: Send Telegram message on push (Failed)
+      if: steps.tests.outcome != 'success'
+      uses: appleboy/telegram-action@0.0.3
+      with:
+        to: ${{ secrets.TELEGRAM_TO }}
+        token: ${{ secrets.TELEGRAM_TOKEN }}
+        message: |
+          **GitHub Action Notification**
+
+          Repository: MyRepo pythone-gitaction
+          Branch: ${{ github.ref }}
+          Commit: ${{ github.sha }}
+          Author: ${{ github.actor }}
+          Message: ${{ github.event.head_commit.message }}
+          Status: Tests Failed
+      env:
+        TELEGRAM_TO: ${{ secrets.TELEGRAM_TO }}
+        TELEGRAM_TOKEN: ${{ secrets.TELEGRAM_TOKEN }}
+
+    - name: Send Telegram message on push (Success)
+      if: steps.tests.outcome == 'success'
+      uses: appleboy/telegram-action@0.0.3
+      with:
+        to: ${{ secrets.TELEGRAM_TO }}
+        token: ${{ secrets.TELEGRAM_TOKEN }}
+        message: |
+          **GitHub Action Notification**
+
+          Repository: MyRepo pythone-gitaction
+          Branch: ${{ github.ref }}
+          Commit: ${{ github.sha }}
+          Author: ${{ github.actor }}
+          Message: ${{ github.event.head_commit.message }}
+          Status: Tests Passed
+      env:
+        TELEGRAM_TO: ${{ secrets.TELEGRAM_TO }}
+        TELEGRAM_TOKEN: ${{ secrets.TELEGRAM_TOKEN }}
 
