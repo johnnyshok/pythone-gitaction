@@ -27,8 +27,7 @@ jobs:
     - name: Save Test Results
       run: |
         # Збереження результатів тестів у файл
-        python -m unittest discover tests > test_results.txt
-        cp test_results.txt $GITHUB_WORKSPACE
+        python -m unittest discover tests > $GITHUB_WORKSPACE/test_results.txt
       if: always()
 
     - name: Read Test Results
