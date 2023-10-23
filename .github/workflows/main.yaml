@@ -2,15 +2,16 @@ name: Telegram Notification Demo
 
 on:
   push:
-    branches:
-      - main
-      - master
+    branches: [main]
 
 jobs:
   build:
     runs-on: ubuntu-latest
 
     steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+
     - name: Set up Python
       uses: actions/setup-python@v2
       with:
@@ -21,51 +22,29 @@ jobs:
         pip install pytest
 
     - name: Run Tests
-      id: tests
+      run: python -m unittest discover tests
+
+    - name: Save Test Results
       run: |
-        test_result=$(python -m unittest discover 2>&1)
-        if [[ "$test_result" == *"Ran 1 tests"* ]]; then
-          echo "Tests Failed"
-        else
-        echo "Tests Success"
-        fi
-      continue-on-error: true
+        # Збереження результатів тестів у файл
+        python -m unittest discover tests > test_results.txt
+        cp test_results.txt $GITHUB_WORKSPACE
+      if: always()
 
-    - name: Send Telegram message on push (Failed)
-      if: steps.tests.outcome != 'success'
+    - name: Read Test Results
+      id: read_results
+      run: |
+        echo "::set-output name=results::$(cat $GITHUB_WORKSPACE/test_results.txt)"
+      shell: bash
+
+    - name: send telegram message on push
       uses: appleboy/telegram-action@0.0.3
       with:
         to: ${{ secrets.TELEGRAM_TO }}
         token: ${{ secrets.TELEGRAM_TOKEN }}
-        message: |
-          **GitHub Action Notification**
+        message: ${{ steps.read_results.outputs.results }}
 
-          Repository: MyRepo pythone-gitaction
-          Branch: ${{ github.ref }}
-          Commit: ${{ github.sha }}
-          Author: ${{ github.actor }}
-          Message: ${{ github.event.head_commit.message }}
-          Status: Tests Failed
-      env:
-        TELEGRAM_TO: ${{ secrets.TELEGRAM_TO }}
-        TELEGRAM_TOKEN: ${{ secrets.TELEGRAM_TOKEN }}
-
-    - name: Send Telegram message on push (Success)
-      if: steps.tests.outcome == 'success'
-      uses: appleboy/telegram-action@0.0.3
-      with:
-        to: ${{ secrets.TELEGRAM_TO }}
-        token: ${{ secrets.TELEGRAM_TOKEN }}
-        message: |
-          **GitHub Action Notification**
-
-          Repository: MyRepo pythone-gitaction
-          Branch: ${{ github.ref }}
-          Commit: ${{ github.sha }}
-          Author: ${{ github.actor }}
-          Message: ${{ github.event.head_commit.message }}
-          Status: Tests Passed
-      env:
-        TELEGRAM_TO: ${{ secrets.TELEGRAM_TO }}
-        TELEGRAM_TOKEN: ${{ secrets.TELEGRAM_TOKEN }}
+    env:
+      TELEGRAM_TO: ${{ secrets.TELEGRAM_TO }}
+      TELEGRAM_TOKEN: ${{ secrets.TELEGRAM_TOKEN }}
 
