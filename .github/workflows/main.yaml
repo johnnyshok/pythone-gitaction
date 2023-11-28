@@ -43,9 +43,8 @@ jobs:
         to: ${{ secrets.TELEGRAM_TO }}
         token: ${{ secrets.TELEGRAM_TOKEN }}
         status: ${{ job.status }} # do not modify this line
-        #message: ${{ steps.read_results.outputs.results }}
         message: |
-            An event occured in ${{ github.repository	 }} repository.
+            An event occured in ${{ github.repository }} repository.
             ${{ github.event_name }}
 
 
