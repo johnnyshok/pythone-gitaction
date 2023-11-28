@@ -38,11 +38,22 @@ jobs:
 
     - name: send telegram message on push
       if: failure() 
-      uses: appleboy/telegram-action@0.0.3
+      #uses: appleboy/telegram-action@0.0.3
+      uses: naiw1023/notify-telegram@v0.0.2
       with:
         to: ${{ secrets.TELEGRAM_TO }}
         token: ${{ secrets.TELEGRAM_TOKEN }}
-        message: ${{ steps.read_results.outputs.results }}
+        status: ${{ job.status }} # do not modify this line
+        #message: ${{ steps.read_results.outputs.results }}
+        message: |
+          "Error:
+  Last commit: [Commit ${{ github.sha }}](https://github.com/${{ github.repository }}/commit/${{ github.sha }})
+  Commit message: ${{ github.event.head_commit.message }}
+  Changes made by: ${{ github.actor }}
+  COULD YOU PLEASE CHECK IT ASAP!!!
+  Test results: ${{ steps.read_results.outputs.results }}"
+
+
 
     env:
       TELEGRAM_TO: ${{ secrets.TELEGRAM_TO }}
