@@ -45,12 +45,9 @@ jobs:
         status: ${{ job.status }} # do not modify this line
         #message: ${{ steps.read_results.outputs.results }}
         message: |
-          "Error:
-           Last commit: [Commit ${{ github.sha }}](https://github.com/${{ github.repository }}/commit/${{ github.sha }})
-           Commit message: ${{ github.event.head_commit.message }}
-           Changes made by: ${{ github.actor }}
-           COULD YOU PLEASE CHECK IT ASAP!!!
-           Test results: ${{ steps.read_results.outputs.results }}"
+          "Error: COULD YOU PLEASE CHECK IT ASAP!!!
+            An event occured in ${{ github.repository	 }} repository.
+            ${{ github.event_name }}"
 
 
 
