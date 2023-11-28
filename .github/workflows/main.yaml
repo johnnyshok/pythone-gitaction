@@ -42,9 +42,6 @@ jobs:
       with:
         to: ${{ secrets.TELEGRAM_TO }}
         token: ${{ secrets.TELEGRAM_TOKEN }}
-        message: ${{ job.status }}  ${{ github.repository }}  ${{ github.event_name }}
-
-
 
     env:
       TELEGRAM_TO: ${{ secrets.TELEGRAM_TO }}
