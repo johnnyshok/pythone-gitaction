@@ -47,11 +47,11 @@ jobs:
         #message: ${{ steps.read_results.outputs.results }}
         message: |
           "Error:
-  Last commit: [Commit ${{ github.sha }}](https://github.com/${{ github.repository }}/commit/${{ github.sha }})
-  Commit message: ${{ github.event.head_commit.message }}
-  Changes made by: ${{ github.actor }}
-  COULD YOU PLEASE CHECK IT ASAP!!!
-  Test results: ${{ steps.read_results.outputs.results }}"
+           Last commit: [Commit ${{ github.sha }}](https://github.com/${{ github.repository }}/commit/${{ github.sha }})
+           Commit message: ${{ github.event.head_commit.message }}
+           Changes made by: ${{ github.actor }}
+           COULD YOU PLEASE CHECK IT ASAP!!!
+           Test results: ${{ steps.read_results.outputs.results }}"
 
 
 
