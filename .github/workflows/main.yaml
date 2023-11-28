@@ -42,10 +42,7 @@ jobs:
       with:
         to: ${{ secrets.TELEGRAM_TO }}
         token: ${{ secrets.TELEGRAM_TOKEN }}
-        status: ${{ job.status }} # do not modify this line
-        message: |
-            An event occured in ${{ github.repository }} repository.
-            ${{ github.event_name }}
+        message: ${{ job.status }}  ${{ github.repository }}  ${{ github.event_name }}
 
 
 
